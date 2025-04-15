@@ -9,15 +9,19 @@ import { FC } from 'react';
 import { fetchIngredients } from '../../slices/burgerSlice';
 
 export const ConstructorPage: FC = () => {
-  const dispatch = useDispatch();
-  const { data, loading, error } = useSelector((state) => state.ingredients);
+  const isIngredientsLoading = useSelector(
+    (state) => state.ingredients.loading
+  );
 
-  useEffect(() => {
-    dispatch(fetchIngredients());
-  }, [dispatch]);
+  // const dispatch = useDispatch();
+  // const { data, loading, error } = useSelector((state) => state.ingredients);
+
+  // useEffect(() => {
+  //   dispatch(fetchIngredients());
+  // }, [dispatch]);
 
   /** TODO: взять переменную из стора */
-  const isIngredientsLoading = loading; // false
+  // const isIngredientsLoading = loading; // false
 
   return (
     <>
