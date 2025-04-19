@@ -7,43 +7,138 @@ import {
   resetPasswordApi,
   getUserApi,
   updateUserApi,
-  logoutApi
+  logoutApi,
+  TLoginData,
+  TRegisterData
 } from '../utils/burger-api';
+import { TUser } from '@utils-types';
+import { setCookie, deleteCookie } from '../utils/cookie';
 
-type TUser = {
-  name: string;
-  isCheck: boolean;
-  error: null | string;
+type TUserState = {
+  data: TUser | null;
+  isAuthChecked: boolean;
+  error: string | undefined;
 };
 
-const initialState: TUser = {
-  name: '',
-  isCheck: false,
-  error: null
+const initialState: TUserState = {
+  data: null, // { email: '', name: '',}
+  isAuthChecked: false,
+  error: undefined
 };
 
-const registerUser = createAsyncThunk('userInfo/registerUser', registerUserApi);
+export const fetchRegisterUser = createAsyncThunk(
+  'userInfo/registerUser',
+  async (data: TRegisterData) => {
+    const res = await registerUserApi(data);
+    setCookie('accessToken', res.accessToken);
+    localStorage.setItem('refreshToken', res.refreshToken);
+    return res.user;
+  }
+);
 
-const loginUser = createAsyncThunk('userInfo/loginUser', loginUserApi);
+export const fetchLoginUser = createAsyncThunk(
+  'userInfo/loginUser',
+  async (data: TLoginData) => {
+    const res = await loginUserApi(data);
+    setCookie('accessToken', res.accessToken);
+    localStorage.setItem('refreshToken', res.refreshToken);
+    return res.user;
+  }
+);
 
-const forgotPassword = createAsyncThunk(
+export const fetchForgotPassword = createAsyncThunk(
   'userInfo/forgotPassword',
   forgotPasswordApi
 );
-
-const resetPassword = createAsyncThunk(
+export const resetPassword = createAsyncThunk(
   'userInfo/resetPassword',
   resetPasswordApi
 );
-
-const getUser = createAsyncThunk('userInfo/getUser', getUserApi);
-
-const updateUser = createAsyncThunk('userInfo/updateUser', updateUserApi);
-
-const logout = createAsyncThunk('userInfo/logout', logoutApi);
+export const fetchGetUser = createAsyncThunk('userInfo/getUser', getUserApi);
+export const fetchUpdateUser = createAsyncThunk(
+  'userInfo/updateUser',
+  updateUserApi
+);
+export const logout = createAsyncThunk('userInfo/logout', (_, { dispatch }) => {
+  logoutApi()
+    .then(() => {
+      deleteCookie('accessToken');
+      localStorage.clear();
+      dispatch(logout());
+    })
+    .catch(() => {
+      console.log('Ошибка выполнения выхода');
+    });
+});
 
 export const userSlice = createSlice({
   name: 'userInfo',
   initialState,
-  reducers: {}
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+    // checkUser
+      .addCase(fetchGetUser.pending, (state) => {
+        state.error = undefined;
+        state.isAuthChecked = false;
+      })
+      .addCase(fetchGetUser.fulfilled, (state, { payload }) => {
+        state.isAuthChecked = true;
+        state.data = payload.user;
+      })
+      .addCase(fetchGetUser.rejected, (state, { error }) => {
+        state.error = error.message;
+        state.isAuthChecked = true;
+      })
+    // логин
+      .addCase(fetchLoginUser.pending, (state) => {
+        state.error = undefined;
+      })
+      .addCase(fetchLoginUser.fulfilled, (state, { payload }) => {
+        state.isAuthChecked = true;
+        state.data = payload;
+      })
+      .addCase(fetchLoginUser.rejected, (state, { error }) => {
+        state.error = error.message;
+        state.isAuthChecked = true;
+      })
+    // изменеие данных в профиле 
+      .addCase(fetchUpdateUser.pending, (state) => {})
+      .addCase(fetchUpdateUser.fulfilled, (state, { payload }) => {
+        state.data = payload.user;
+      })
+      .addCase(fetchUpdateUser.rejected, (state, { error }) => {
+        state.error = error.message;
+      })
+    // регистрация
+      .addCase(fetchRegisterUser.pending, (state) => {
+        state.error = undefined;
+      })
+      .addCase(fetchRegisterUser.fulfilled, (state, { payload }) => {
+        state.data = payload;
+        state.isAuthChecked = true;
+      })
+      .addCase(fetchRegisterUser.rejected, (state, { error }) => {
+        state.error = error.message;
+        state.isAuthChecked = true;
+      })
+    // выход
+      .addCase(logout.pending, (state) => {
+        state.error = undefined;
+      })
+      .addCase(logout.fulfilled, (state, { payload }) => {
+        state.data = null;
+        state.isAuthChecked = true;
+      })
+      .addCase(logout.rejected, (state, { error }) => {
+        state.error = error.message;
+      });
+  },
+  selectors: {
+    getCheckUser: (state) => state.isAuthChecked
+  }
 });
+
+export const { getCheckUser } = userSlice.selectors;
+
+export default userSlice.reducer;

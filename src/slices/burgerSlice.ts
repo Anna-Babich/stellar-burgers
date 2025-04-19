@@ -18,14 +18,6 @@ const initialState: TIngredientsState = {
 export const fetchIngredients = createAsyncThunk(
   'burger/fetchIngredients',
   getIngredientsApi
-  // async (_, { rejectWithValue }) => {
-  //   try {
-  //     const data = await getIngredientsApi();
-  //     return data;
-  //   } catch (err: any) {
-  //     return rejectWithValue(err.message || 'Ошибка загрузки ингредиентов');
-  //   }
-  // }
 );
 
 export const burgerSlice = createSlice({

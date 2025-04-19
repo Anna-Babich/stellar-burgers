@@ -1,19 +1,25 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import burgerReducer from '../slices/burgerSlice';
 import constructorReducer from '../slices/constructorSlice';
-import orderSlice from '../slices/orderSlice';
+import orderReducer from '../slices/orderSlice';
+import userReducer from '../slices/userSlice';
+import feedReducer from '../slices/feedSlice';
+import profileOrderReducer from '../slices/profileOrderSlice';
 import {
   TypedUseSelectorHook,
   useDispatch as dispatchHook,
   useSelector as selectorHook
 } from 'react-redux';
 
+// Заменить на импорт настоящего редьюсера
 const rootReducer = combineReducers({
   ingredients: burgerReducer,
   burgerConstructor: constructorReducer,
-  newOrder: orderSlice
-}); // Заменить на импорт настоящего редьюсера
-//burderCOnstructor, feed, ingredients, order - Прямая ссылка или в модалке, ProfileOrders - со страницы профиля/заказы профиля , user
+  newOrder: orderReducer,
+  user: userReducer,
+  feed: feedReducer,
+  profileOrders: profileOrderReducer
+});
 
 const store = configureStore({
   reducer: rootReducer,

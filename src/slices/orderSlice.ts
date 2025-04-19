@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getIngredientsApi } from '../utils/burger-api';
 import { TIngredient, TOrder } from '../utils/types';
 import { orderBurgerApi, TNewOrderResponse } from '../utils/burger-api';
 
@@ -23,7 +22,12 @@ export const fetchNewOrder = createAsyncThunk(
 export const orderSlice = createSlice({
   name: 'order',
   initialState,
-  reducers: {},
+  reducers: {
+    clearOrder: (state) => {
+      state.orderRequest = false;
+      state.orderModalData = null;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchNewOrder.pending, (state) => {
@@ -41,11 +45,6 @@ export const orderSlice = createSlice({
 
 export default orderSlice.reducer;
 
-// type TNewOrderResponse = TServerResponse<{
-//   order: TOrder;
-//   name: string;
-// }>;
-
 // export const orderBurgerApi = (data: string[]) =>
 //   fetchWithRefresh<TNewOrderResponse>(`${URL}/orders`, {
 //     method: 'POST',
@@ -60,38 +59,3 @@ export default orderSlice.reducer;
 //     if (data?.success) return data;
 //     return Promise.reject(data);
 //   });
-
-// export const fetchIngredients = createAsyncThunk(
-//   'burger/fetchIngredients',
-//   async (_, { rejectWithValue }) => {
-//     try {
-//       const data = await getIngredientsApi();
-//       return data;
-//     } catch (err: any) {
-//       return rejectWithValue(err.message || 'Ошибка загрузки ингредиентов');
-//     }
-//   }
-// );
-
-// export const burgerSlice = createSlice({
-//   name: 'ingredients',
-//   initialState,
-//   reducers: {},
-//   extraReducers: (builder) => {
-//     builder
-//       .addCase(fetchIngredients.pending, (state) => {
-//         state.loading = true;
-//         state.error = null;
-//       })
-//       .addCase(fetchIngredients.fulfilled, (state, action) => {
-//         state.loading = false;
-//         state.data = action.payload;
-//       })
-//       .addCase(fetchIngredients.rejected, (state, action) => {
-//         state.loading = false;
-//         state.error = action.payload as string;
-//       });
-//   }
-// });
-
-// export default burgerSlice.reducer;

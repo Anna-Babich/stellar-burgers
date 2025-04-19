@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getIngredientsApi } from '../utils/burger-api';
 import { TIngredient, TConstructorIngredient } from '../utils/types';
 import { v4 as uuid } from 'uuid';
 
@@ -46,15 +45,6 @@ export const constructorSlice = createSlice({
       [items[index], items[index - 1]] = [items[index - 1], items[index]];
       state.ingredients = items;
     },
-    reorderConstructor: (
-      state,
-      { payload }: PayloadAction<{ from: number; to: number }>
-    ) => {
-      const { from, to } = payload;
-      const ingredients = [...state.ingredients];
-      ingredients.splice(to, 0, ingredients.splice(from, 1)[0]);
-      state.ingredients = ingredients;
-    },
     resetConstructor: () => initialState
   },
   selectors: {
@@ -62,34 +52,9 @@ export const constructorSlice = createSlice({
   }
 });
 
-// export const constructorSlice = createSlice({
-//   name: 'burgerConstruct',
-//   initialState,
-//   reducers: {
-//     setBun(state, action: PayloadAction<TIngredient>) {
-//       state.bun = action.payload;
-//     },
-//     addIngredient(state, action: PayloadAction<TIngredient>) {
-//       console.log('Добавление ингредиента', action.payload);
-//       state.ingredients.push(action.payload);
-//     },
-//     removeIngredient(state, action: PayloadAction<string>) {
-//       // удаляет по уникальному id (можно будет доработать для drag-n-drop)
-//       state.ingredients = state.ingredients.filter(
-//         (item) => item._id !== action.payload
-//       );
-//     },
-//     resetConstructor(state) {
-//       state.bun = null;
-//       state.ingredients = [];
-//     }
-//   }
-// });
-
 export const {
   addIngredient,
   removeIngredient,
-  reorderConstructor,
   resetConstructor,
   moveDownIngredient,
   moveUpIngredient
