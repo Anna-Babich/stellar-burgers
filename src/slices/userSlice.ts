@@ -20,7 +20,7 @@ type TUserState = {
   error: string | undefined;
 };
 
-const initialState: TUserState = {
+export const initialState: TUserState = {
   data: null, // { email: '', name: '',}
   isAuthChecked: false,
   error: undefined
@@ -77,10 +77,9 @@ export const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-    // checkUser
+      // checkUser
       .addCase(fetchGetUser.pending, (state) => {
         state.error = undefined;
-        state.isAuthChecked = false;
       })
       .addCase(fetchGetUser.fulfilled, (state, { payload }) => {
         state.isAuthChecked = true;
@@ -90,7 +89,7 @@ export const userSlice = createSlice({
         state.error = error.message;
         state.isAuthChecked = true;
       })
-    // логин
+      // логин
       .addCase(fetchLoginUser.pending, (state) => {
         state.error = undefined;
       })
@@ -102,7 +101,7 @@ export const userSlice = createSlice({
         state.error = error.message;
         state.isAuthChecked = true;
       })
-    // изменеие данных в профиле 
+      // изменеие данных в профиле
       .addCase(fetchUpdateUser.pending, (state) => {})
       .addCase(fetchUpdateUser.fulfilled, (state, { payload }) => {
         state.data = payload.user;
@@ -110,7 +109,7 @@ export const userSlice = createSlice({
       .addCase(fetchUpdateUser.rejected, (state, { error }) => {
         state.error = error.message;
       })
-    // регистрация
+      // регистрация
       .addCase(fetchRegisterUser.pending, (state) => {
         state.error = undefined;
       })
@@ -122,7 +121,7 @@ export const userSlice = createSlice({
         state.error = error.message;
         state.isAuthChecked = true;
       })
-    // выход
+      // выход
       .addCase(logout.pending, (state) => {
         state.error = undefined;
       })

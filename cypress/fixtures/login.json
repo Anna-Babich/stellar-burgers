@@ -1,0 +1,9 @@
+{
+    "success": true,
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDQwZTdkZThlNjFkMDAxY2VjMzdiZSIsImlhdCI6MTc0NTg3NDMwOSwiZXhwIjoxNzQ1ODc1NTA5fQ.4Z2Evifzq_dvv0gnez1a8_htvByyyK2nh6H0I11Ylo0",
+    "refreshToken": "cdc0d84fcd73b03190903e984bfd99ad6bdab74fe248df83ace490a62d28b8d748232e16cd599e2a",
+    "user": {
+        "email": "anna@yandex.ru",
+        "name": "Anya"
+    }
+}

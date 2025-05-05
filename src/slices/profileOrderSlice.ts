@@ -10,7 +10,7 @@ type TProfileOrderState = {
   error: string | undefined;
 };
 
-const initialState: TProfileOrderState = {
+export const initialState: TProfileOrderState = {
   orders: [],
   total: 0,
   totalToday: 0,
@@ -29,10 +29,12 @@ export const profileOrderSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchGetOrders.pending, (state) => {})
+      .addCase(fetchGetOrders.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(fetchGetOrders.fulfilled, (state, { payload }) => {
         state.orders = payload;
-        state.loading = true;
+        state.loading = false;
       })
       .addCase(fetchGetOrders.rejected, (state, { error }) => {
         state.error = error.message;

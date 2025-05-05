@@ -11,7 +11,7 @@ type TFeedState = {
   selectedOrder: null | TOrder;
 };
 
-const initialState: TFeedState = {
+export const initialState: TFeedState = {
   orders: [],
   total: 0,
   totalToday: 0,
@@ -36,7 +36,9 @@ export const feedSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchGetFeeds.pending, (state) => {})
+      .addCase(fetchGetFeeds.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(fetchGetFeeds.fulfilled, (state, { payload }) => {
         state.orders = payload.orders;
         state.total = payload.total;
@@ -44,16 +46,20 @@ export const feedSlice = createSlice({
         state.loading = false;
       })
       .addCase(fetchGetFeeds.rejected, (state, { error }) => {
+        state.loading = false;
         state.error = error.message;
       })
 
       .addCase(fetchGetOrderByNumber.pending, (state) => {
+        state.loading = true;
         state.selectedOrder = null;
       })
       .addCase(fetchGetOrderByNumber.fulfilled, (state, { payload }) => {
+        state.loading = false;
         state.selectedOrder = payload.orders[0];
       })
       .addCase(fetchGetOrderByNumber.rejected, (state, { error }) => {
+        state.loading = false;
         state.error = error.message;
       });
   }
