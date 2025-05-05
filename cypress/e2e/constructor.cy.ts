@@ -30,14 +30,19 @@ describe('constructor', () => {
     it('добавлени ингредиента в коснтруткор', () => {
         cy.wait('@getIngredients');
 
+        cy.get('[data-cy=burger-constructor]').should('not.contain', 'Краторная булка N-200i');
+
         cy.contains('Добавить').first().click();
-        cy.get('[data-cy=burger-constructor]').should('have.length.greaterThan', 0);
+        cy.get('[data-cy=burger-constructor]').should('contain', 'Краторная булка N-200i');
     })
 
     it('открытие модального окна ингредиента', () => {
         cy.wait('@getIngredients');
-        cy.get('[data-cy=ingredient-card]').first().click();
+
+        cy.contains('[data-cy=ingredient-card]', 'Филе Люминесцентного тетраодонтимформа').click();
+        
         cy.get('[data-cy=modal]').should('be.visible');
+        cy.get('[data-cy=modal]').should('contain', 'Филе Люминесцентного тетраодонтимформа');
     })
 
     it('закрытие модального окна ингредиента через крестик', () => {
